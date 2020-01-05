@@ -10,7 +10,7 @@ export class MemberService {
   constructor(private http: HttpClient) { }
 
   /** GET members from the server */
-  getHeroes (): Observable<Member[]> {
+  getMembers (): Observable<Member[]> {
     return this.http.get<Member[]>(this.memberUrl);
   }
 

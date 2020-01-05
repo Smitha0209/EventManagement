@@ -1,1 +1,26 @@
-<p>event works!</p>
+<div>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>ORGANIZER</th>
+                <th>COMPANY </th>
+                <th>ABOUT</th>
+                <th>SCHEDULED_AT</th>
+                <th>DURATION</th>
+                <th>CAPACITY</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let event of events">
+                <td>{{ event._id }}</td>
+                <td>{{ event.organizer.first}} {{event.organizer.last}}</td>
+                <td>{{ event.company }}</td>
+                <td>{{ event.about }}</td>
+                <td>{{ event.scheduled_at }}</td>
+                <td>{{ event.duration }}</td>
+                <td>{{ event.capacity }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

@@ -15,17 +15,23 @@ export class MemberComponent implements OnInit {
   reverse: boolean = false;
   sortedCollection: any[];
   members: Member[];
-  constructor(private membersService: MemberService,private orderPipe: OrderPipe) {
+  constructor(private membersService: MemberService, private orderPipe: OrderPipe) {
     this.sortedCollection = orderPipe.transform(this.members, this.order);
   }
 
   ngOnInit() {
-    this.getMembers();
+    if(sessionStorage.getItem("memberList") === undefined || sessionStorage.getItem("memberList") === null){
+      this.getMembers();
+    } else {
+      this.members = JSON.parse(sessionStorage.getItem("memberList"));
+    }
   }
 
   getMembers(): void {
-    this.membersService.getHeroes()
-    .subscribe(members => (this.members = members));
+    this.membersService.getMembers()
+    .subscribe(
+      members => (this.members = members, sessionStorage.setItem("memberList", JSON.stringify(this.members)))
+    );
   }
 
   setOrder(value: string) {
@@ -33,6 +39,14 @@ export class MemberComponent implements OnInit {
       this.reverse = !this.reverse;
     }
     this.order = value;
+  }
+
+  deleteMember(index: number) : Member[] {
+    if (index !== -1) {
+      this.members.splice(index, 1);
+    }
+    console.log(this.members);
+    return this.members;
   }
 
 }
