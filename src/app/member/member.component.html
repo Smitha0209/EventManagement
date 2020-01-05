@@ -1,0 +1,30 @@
+<div>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th [class.active]="order === 'age'" (click)="setOrder('age')"
+                    class="mdl-data-table__cell--non-numeric">
+                    AGE <span [hidden]="reverse">▼</span><span [hidden]="!reverse">▲</span>
+                </th>
+                <th [class.active]="order === 'name.first'" (click)="setOrder('name.first')"
+                    class="mdl-data-table__cell--non-numeric">
+                    NAME <span [hidden]="reverse">▼</span><span [hidden]="!reverse">▲</span>
+                </th>
+                <th>COMPANY </th>
+                <th>EMAIL</th>
+                <th>PHONE</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let member of members | orderBy: order:reverse:'case-insensitive'">
+                <td>{{ member._id }}</td>
+                <td>{{ member.age }}</td>
+                <td>{{ member.name.first}} {{member.name.last}}</td>
+                <td>{{ member.company }}</td>
+                <td>{{ member.email }}</td>
+                <td>{{ member.phone }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
