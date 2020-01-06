@@ -5,7 +5,7 @@ import { Member } from './member';
 
 @Injectable()
 export class MemberService {
-  memberUrl = 'https://next.json-generator.com/api/json/get/NyNrlJTX8';  // URL to web api
+  memberUrl = 'https://next.json-generator.com/api/json/get/4JZM27o1O';  // URL to web api
 
   constructor(private http: HttpClient) { }
 

@@ -8,4 +8,5 @@ export interface Member {
     company: string;
     email: string;
     phone: string;
+    events: number;
 }

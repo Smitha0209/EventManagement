@@ -14,18 +14,38 @@
                 <th>COMPANY </th>
                 <th>EMAIL</th>
                 <th>PHONE</th>
+                <th>EVENT</th>
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let member of members | orderBy: order:reverse:'case-insensitive';let i = index;trackBy:trackByIndex;">
+            <tr *ngFor="let member of members | orderBy: order:reverse:'case-insensitive';" id="">
                 <td>{{ member._id }}</td>
                 <td>{{ member.age }}</td>
                 <td>{{ member.name.first}} {{member.name.last}}</td>
                 <td>{{ member.company }}</td>
                 <td>{{ member.email }}</td>
                 <td>{{ member.phone }}</td>
-                <td><button class="button" (click)="deleteMember(i)">Delete</button></td>
+                <td>{{ member.events }}</td>
+                <td><button class="btn btn-lg btn-outline-primary" (click)="addEvent(content, member._id)">Add Event</button></td>
+                <td><button class="button" (click)="deleteMember(member)">Delete</button></td>
             </tr>
         </tbody>
     </table>
+    <ng-template #content let-modal>
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">Add Event</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <select [(ngModel)]="eventSelect" name="eventSelect" class="browser-default custom-select">
+                <option disabled selected>Select an Event</option>
+                <option *ngFor="let event of events" [value]="event">{{event.company}}</option>
+            </select>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline-dark" (click)="saveEvent()">Save</button>
+        </div>
+    </ng-template>
 </div>
