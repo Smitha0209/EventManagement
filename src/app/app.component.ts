@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Event } from './event/Event';
-import { Member, MemberEvents } from './member/Member';
+import { Event } from './event/event';
+import { Member, MemberEvents } from './member/member';
 import { AppService } from './app.services';
 
 @Component({
