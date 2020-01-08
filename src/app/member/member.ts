@@ -8,5 +8,11 @@ export interface Member {
     company: string;
     email: string;
     phone: string;
-    events: number;
+    eventCount: number;
+    eventsReg: string[];
+}
+
+export interface MemberEvents {
+    memberId: string;
+    events: string[];
 }

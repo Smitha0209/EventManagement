@@ -6,8 +6,8 @@ import { Member } from './member/Member';
 
 @Injectable()
 export class AppService {
-    eventUrl = 'https://next.json-generator.com/api/json/get/Vk7OTypQ8';  // URL to web api
-    memberUrl = 'https://next.json-generator.com/api/json/get/4JZM27o1O';  // URL to web api
+    eventUrl = 'https://next.json-generator.com/api/json/get/Vk7OTypQ8';  // URL to event json
+    memberUrl = 'https://next.json-generator.com/api/json/get/4kDBbTiku';  // URL to members json
 
     constructor(private http: HttpClient) { }
 

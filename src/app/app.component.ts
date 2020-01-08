@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Event } from './event/Event';
-import { Member } from './member/Member';
+import { Member, MemberEvents } from './member/Member';
 import { AppService } from './app.services';
 
 @Component({
@@ -13,6 +13,7 @@ export class AppComponent implements OnInit{
   title = 'event-management';
   members: Member[];
   events: Event[];
+  memberEvents: MemberEvents[];
 
   constructor(private appService: AppService) {}
 

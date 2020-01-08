@@ -1,9 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { OrderPipe } from 'ngx-order-pipe';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatSort } from '@angular/material/sort'
 
-import { Member } from './member';
-//import { MemberService } from './member.service';
+import { Member, MemberEvents } from './member';
+import { Event } from '../event/event';
+import { from } from 'rxjs';
+import { ThrowStmt } from '@angular/compiler';
 
 @Component({
   selector: 'app-member',
@@ -17,12 +21,28 @@ export class MemberComponent implements OnInit {
   confirmation: boolean = false;
   reverse: boolean = false;
   sortedCollection: any[];
+  displayedColumns: string[] = ['firstName', 'age', 'company', 'email', 'phone', 'eventCount'];
+  dataSource: any;
   members: Member[];
   events: Event[];
-  memberId: string;
+  memberEvents: MemberEvents[] = [];
+  memberIds: any[] = [];
   eventSelect: string = "Select an Event";
+  memberSelect: string = "Select a Member";
+  memberDelete: string = "Select a Member";
+
+  @ViewChild(MatSort, {static: true}) sort: MatSort;
+
   constructor(private orderPipe: OrderPipe, private modalService: NgbModal) {
     this.sortedCollection = orderPipe.transform(this.members, this.order);
+  }
+  
+  sortingDataAccessor(item, property) {
+    if (property.includes('.')) {
+      return property.split('.')
+        .reduce((object, key) => object[key], item);
+    }
+    return item[property];
   }
 
   ngOnInit() {
@@ -33,6 +53,21 @@ export class MemberComponent implements OnInit {
     if (sessionStorage.getItem("eventList") !== undefined || sessionStorage.getItem("eventList") !== null) {
       this.events = JSON.parse(sessionStorage.getItem("eventList"));
     }
+
+    if (sessionStorage.getItem("memberEvents") !== undefined && sessionStorage.getItem("memberEvents") !== null) {
+      this.memberEvents = JSON.parse(sessionStorage.getItem("memberEvents"));
+    }
+
+    for(let member in this.members){
+      this.memberIds.push(this.members[member]._id);
+    }
+    this.dataSource = new MatTableDataSource(this.members);
+    this.dataSource.sort = this.sort;
+
+  }
+
+  applyFilter(filterValue: string) {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   setOrder(value: string) {
@@ -42,16 +77,31 @@ export class MemberComponent implements OnInit {
     this.order = value;
   }
 
-  deleteMember(member: Member) {
-    this.confirmation = confirm("Are you sure you want to delete?");
-    if (this.confirmation) {
-      this.members.splice(this.members.findIndex(x => x == member), 1);
-      sessionStorage.setItem("memberList", JSON.stringify(this.members));
-    }
+  deleteMember(deletecontent) {
+    this.memberDelete = "Select a Member";
+    this.modalService.open(deletecontent, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
   }
 
-  addEvent(content, memberId: string) {
-    this.memberId = memberId;
+  delete(){
+    let index = 0;
+    for(let member in this.members){
+      if(this.members[member]._id === this.memberDelete){
+        this.members.splice(index,1);
+        break;
+      }
+      index++;
+    }    
+    this.dataSource = new MatTableDataSource(this.members);
+    this.dataSource.sort = this.sort;
+    sessionStorage.setItem("memberList", JSON.stringify(this.members));
+    this.modalService.dismissAll();
+  }
+
+  addEvent(content) {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
@@ -60,11 +110,42 @@ export class MemberComponent implements OnInit {
   }
 
   saveEvent() {
-    for(let element in this.members){
-      if(this.members[element]._id === this.memberId){
-        this.members[element].events++;
+    let eventRegistered = false;
+    let eventAdded = false;
+    for(let member in this.members){
+      if(this.members[member]._id === this.memberSelect){
+        if(this.members[member].eventCount){
+          for(let event in this.members[member].eventsReg){
+            if(this.eventSelect === this.members[member].eventsReg[event]){
+              eventRegistered = true;
+              break;
+            }
+          }
+          if(!eventRegistered){
+            this.members[member].eventCount++;
+            this.members[member].eventsReg.push(this.eventSelect);
+            eventAdded = true;
+          } else {
+            alert("Already registered");
+          }
+        } else {
+          this.members[member].eventCount++;
+          this.members[member].eventsReg.push(this.eventSelect);
+          eventAdded = true;
+        }
+        break;
       }
     }
+    if(eventAdded){
+      for(let event in this.events){
+        if(this.events[event].company === this.eventSelect){
+          this.events[event].capacity++;
+          break;
+        }
+      }      
+    }
+    sessionStorage.setItem("memberList", JSON.stringify(this.members));
+    sessionStorage.setItem("eventList", JSON.stringify(this.events));
     this.modalService.dismissAll();
   }
 

@@ -1,26 +1,73 @@
 <div>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>ORGANIZER</th>
-                <th>COMPANY </th>
-                <th>ABOUT</th>
-                <th>SCHEDULED_AT</th>
-                <th>DURATION</th>
-                <th>CAPACITY</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let event of events">
-                <td>{{ event._id }}</td>
-                <td>{{ event.organizer.first}} {{event.organizer.last}}</td>
-                <td>{{ event.company }}</td>
-                <td>{{ event.about }}</td>
-                <td>{{ event.scheduled_at }}</td>
-                <td>{{ event.duration }}</td>
-                <td>{{ event.capacity }}</td>
-            </tr>
-        </tbody>
+    <button class="btn btn-sm btn-outline-primary" (click)="openCalendar(calendar)">Open Calendar</button>
+<br><br>
+    <ng-template #calendar let-modal>
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">Events</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class='app-calendar' *ngIf="calendarVisible">
+                <full-calendar #calendar defaultView="dayGridMonth" [header]="{
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+              }" [plugins]="calendarPlugins" [weekends]="calendarWeekends" [events]="calendarEvents"
+                    (dateClick)="handleDateClick($event)"></full-calendar>
+            </div>
+            <div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-dark" (click)="closeCalendar()">Close</button>
+            </div>
+        </div>
+    </ng-template>
+
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+        <!--- Note that these columns can be defined in any order.
+          The actual rendered columns are set as a property on the row definition" -->
+
+        <!-- Organizer Column -->
+        <ng-container matColumnDef="organizer">
+            <th mat-header-cell *matHeaderCellDef> Organizer </th>
+            <td mat-cell *matCellDef="let element"> {{element.organizer.first}} {{element.organizer.last}}</td>
+        </ng-container>
+
+        <!-- Company Column -->
+        <ng-container matColumnDef="company">
+            <th mat-header-cell *matHeaderCellDef> Company </th>
+            <td mat-cell *matCellDef="let element"> {{element.company}} </td>
+        </ng-container>
+
+        <!-- About Column -->
+        <ng-container matColumnDef="about">
+            <th mat-header-cell *matHeaderCellDef> About </th>
+            <td mat-cell *matCellDef="let element"> {{element.about}} </td>
+        </ng-container>
+
+        <!-- Schduled_At Column -->
+        <ng-container matColumnDef="scheduled_at">
+            <th mat-header-cell *matHeaderCellDef> Schduled_At </th>
+            <td mat-cell *matCellDef="let element"> {{element.scheduled_at}} </td>
+        </ng-container>
+
+        <!-- Duration Column -->
+        <ng-container matColumnDef="duration">
+            <th mat-header-cell *matHeaderCellDef> Duration </th>
+            <td mat-cell *matCellDef="let element"> {{element.duration}} </td>
+        </ng-container>
+
+        <!-- Capacity Column -->
+        <ng-container matColumnDef="capacity">
+            <th mat-header-cell *matHeaderCellDef> Capacity </th>
+            <td mat-cell *matCellDef="let element"> {{element.capacity}} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
+
 </div>
